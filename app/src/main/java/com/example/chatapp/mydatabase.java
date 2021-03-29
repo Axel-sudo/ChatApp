@@ -1,0 +1,85 @@
+package com.example.chatapp;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+
+
+public class mydatabase extends SQLiteOpenHelper {
+
+
+    private long result;
+    private static final String DBname = "data.db";
+
+    mydatabase(Context context) {
+        super(context, DBname, null, 1);
+
+
+
+    }
+
+
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        profile(db);
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+
+    }
+
+    private void profile(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS profile");
+        db.execSQL("CREATE TABLE profile (id INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT, userAge TEXT, userGender TEXT)");
+
+
+    }
+
+    Boolean insertProfile(String userName, String userAge,  String userGender) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("userName", userName);
+        cv.put("userAge", userAge);
+        cv.put("userGender" , userGender);
+        result = db.insert("profile", null, cv);
+        return result != -1;
+
+
+    }
+
+    ArrayList<String> getProfile(String qry) {
+        ArrayList<String> profile = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(qry, null);
+        if (res.getCount() > 0) {
+            res.moveToFirst();
+            while (!res.isAfterLast()) {
+                profile.add(res.getString(1));
+                profile.add(res.getString(2));
+                profile.add(res.getString(3));
+                res.moveToNext();
+            }
+
+            res.close();
+            return profile;
+
+        } else
+            profile.add("");
+        res.close();
+        return profile;
+
+    }
+}
+
+
+
+
+
