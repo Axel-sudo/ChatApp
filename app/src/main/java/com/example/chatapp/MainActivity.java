@@ -7,8 +7,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -19,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final DatabaseReference myErrorRef = database.getReference().child("errors").child(activityName);
     private Error_class error_class = new Error_class();
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,4 +93,32 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+    private void logout() {
+        try {
+            mAuth.signOut();
+            mGoogleSignInClient.revokeAccess().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Intent intent = new Intent(MainActivity.this, GoogleSignInActivity.class);
+                    startActivity(intent);
+                }
+            });
+        } catch (Exception e) {
+            String functionName = Objects.requireNonNull(new Object() {
+
+            }.getClass().getEnclosingMethod()).getName();
+            int i = 0;
+            for (StackTraceElement ste : e.getStackTrace()) {
+                if (ste.getClassName().contains(activityName))
+                    break;
+                i++;
+            }
+            String lineError = e.getStackTrace()[i].getLineNumber() + "";
+            String msg = e.getMessage();
+            error_class.sendError(myErrorRef, lineError, msg, functionName);
+        }
+    }
+
 }
