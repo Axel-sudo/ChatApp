@@ -20,7 +20,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.view.View;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -290,7 +289,7 @@ public class Group extends AppCompatActivity {
 
 
 
-     abstract class Listadapter extends BaseAdapter {
+    class Listadapter extends BaseAdapter {
         @Override
         public int getCount() {
         return offlineMessages.size();
@@ -342,12 +341,9 @@ public class Group extends AppCompatActivity {
                 txt_partnerName.setText(offlineMessages.get(position).userName + g);
             }
 
-            txt_partnerName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    oneToOne(position);
-                }
-            });
+           txt_partnerName.setOnClickListener ((v) -> {oneToOne(position); });
+
+
 
             return convertView;
         }

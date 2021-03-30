@@ -10,7 +10,9 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final DatabaseReference myErrorRef = database.getReference().child("errors").child(activityName);
     private Error_class error_class = new Error_class();
+
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -33,8 +36,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         try {
-            ListView lst_menu = findViewById(R.id.lst_menu );
+             ListView lst_menu = findViewById(R.id.lst_menu );
             String[] menu = getResources().getStringArray(R.array.menu);
+
+            mAuth = FirebaseAuth.getInstance();
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, menu);
             lst_menu.setAdapter(arrayAdapter);
@@ -66,6 +76,16 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                             break;
                         }
+
+                        case 4: {
+                            Intent intent = new Intent(MainActivity.this, OneToOneChat.class); startActivity(intent);
+                            break;
+                        }
+                        case 5: {
+                            logout();
+                            break;
+                        }
+
 
                     }
                  }
