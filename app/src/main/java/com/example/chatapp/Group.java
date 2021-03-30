@@ -198,7 +198,7 @@ public class Group extends AppCompatActivity {
 
             }
         }
- // }
+
 
     public void msgSend (android.view.View view) {
         try {
@@ -231,7 +231,7 @@ public class Group extends AppCompatActivity {
 
         }
 
-
+        /* BUG A PARTIR D' ICI REGARDER LE PDF SUR DISCORD!! */
         private void oneToOne ( int position){
 
             try {
